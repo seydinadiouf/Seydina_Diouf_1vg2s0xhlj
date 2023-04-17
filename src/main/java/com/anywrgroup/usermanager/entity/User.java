@@ -3,6 +3,7 @@ package com.anywrgroup.usermanager.entity;
 import com.anywrgroup.usermanager.dto.Role;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 @Entity
@@ -15,6 +16,7 @@ public class User implements Serializable {
 
     private String username;
 
+    @NotBlank
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -50,6 +52,16 @@ public class User implements Serializable {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", role=" + role +
+                '}';
     }
 }
 

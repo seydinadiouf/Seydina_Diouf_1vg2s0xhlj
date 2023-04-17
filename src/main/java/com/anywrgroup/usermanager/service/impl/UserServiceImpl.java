@@ -50,27 +50,38 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO createUser(UserDTO userDTO) {
+        /* Check if user already exits */
         if (userRepository.existsByUsername(userDTO.getUsername())) {
             throw new ForbiddenActionException(USER_ALREADY_EXIST);
         }
+
         User user = userMapper.toEntity(userDTO);
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         return userMapper.toDto(userRepository.save(user));
     }
 
     @Override
     public UserDTO readUserByUsername(String username) {
-        return userRepository.findByUsername(username).map(userMapper::toDto).orElseThrow(()-> new ResourceNotFoundException(MessageFormat.format(USER_NOT_FOUND, username)) );
+        UserDTO userDTO = userRepository.findByUsername(username).map(userMapper::toDto).orElseThrow(()-> new ResourceNotFoundException(MessageFormat.format(USER_NOT_FOUND, username)));
+
+        /* Set password to null for security purpose (Could be handle in a better way) */
+        userDTO.setPassword(null);
+
+        return userDTO;
     }
 
     @Override
     public SignInResponse signIn(SignInRequest signInRequest) throws UnexpectedErrorException {
+        /* Authenticating user and generate token*/
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
+        // Retrieving roles (Could be handle in a better way)
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         Role role = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)

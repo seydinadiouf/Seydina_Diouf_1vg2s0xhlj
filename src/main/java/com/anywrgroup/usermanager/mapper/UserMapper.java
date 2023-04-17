@@ -11,9 +11,4 @@ public interface UserMapper {
     User toEntity(UserDTO userDTO);
 
     UserDTO toDto(User user);
-
-    @AfterMapping
-    default void setPassword(@MappingTarget UserDTO userDTO){
-        userDTO.setPassword(null);
-    }
 }

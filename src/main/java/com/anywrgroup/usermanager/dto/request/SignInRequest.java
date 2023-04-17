@@ -3,7 +3,7 @@ package com.anywrgroup.usermanager.dto.request;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-public class SignInRequest {
+public class SignInRequest  {
     @NotBlank
     private String username;
 
@@ -25,5 +25,13 @@ public class SignInRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "SignInRequest{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }
